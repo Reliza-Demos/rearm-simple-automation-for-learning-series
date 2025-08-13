@@ -1,0 +1,26 @@
+on: [push]
+
+name: Build Docker Image And Submit Metadata To ReARM
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+    name: Build And Push Docker Image With Metadata
+    runs-on: ubuntu-latest
+    steps:
+      - name: ReARM Build And Submit Backend Release metadata action
+        uses: relizaio/rearm-docker-action@5b63c478bbff83b1aa8ffbe042025bf8f00cfaeb # v1.3.0
+        with:
+          registry_username: ${{ secrets.DOCKER_LOGIN }}
+          registry_password: ${{ secrets.DOCKER_TOKEN }}
+          registry_host: registry.relizahub.com
+          image_namespace: registry.relizahub.com/a1dfaa24-dc6a-4b56-abb0-4d30c91060d2-public
+          image_name: vue-hello-nginx
+          rearm_api_id: ${{ secrets.REARM_API_ID }}
+          rearm_api_key: ${{ secrets.REARM_API_KEY }}
+          rearm_api_url: https://demo.rearmhq.com
+          path: vue-hello-nginx
+          enable_sbom: 'true'
+          source_code_sbom_type: 'npm'
+          enable_public_cosign_sigstore: 'true'
